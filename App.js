@@ -1,43 +1,88 @@
+import 'react-native-gesture-handler';
+
 // App.js가 루트 컴포넌트가 되는거임
 
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 
-// from 자바스크립트 파일 
-// from 디렉토리명 -> 디렉토리/index.js
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 
-// import HelloWorld from './components/HelloWorld';
-// import Counter from './components/Counter';
-// import LotsOfGreetings from './components/LotsOfGreetings';
-import SimpleList from './components/SimpleList';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-// App 컴포넌트 시작부분
-export default function App() {
-  // JSX 문법 
-  // UI 템플릿을 작성 
-  // App()이 하나의 컴포넌트가 되는 것
-  // return 이하가 UI가 렌더링 되는 부분
+import Home from './components/Home'
+import List from './components/List'
+import Details from './components/Details'
+import Actions from './components/Actions'
+
+// https://ionicons.com/
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const Tab = createBottomTabNavigator();
+const ListStack = createStackNavigator();
+const HomeStack = createStackNavigator();
+
+const HomeStackScreen = () => {
   return (
-          //속성={값}
-          //속성={"문자열"}
-          //속성={{name:"ddd", phone:"ddd"}} -> 객체 구조를 넣고 싶다면 이렇게 
-    <View style={styles.container}>
-      {/* <HelloWorld></HelloWorld> */}
-      {/* <Counter></Counter> */}
-      {/* <LotsOfGreetings></LotsOfGreetings> */}
-      <SimpleList></SimpleList>
-      <StatusBar style="auto" />
-    </View>
+    <HomeStack.Navigator>
+      <HomeStack.Screen name="Home" component={Home} options={{title:"Home", headerTitleAlign:"center"}} />
+      <HomeStack.Screen name="Details" component={Details} options={{title:"Details", headerTitleAlign:"center"}}  />
+    </HomeStack.Navigator>
+  )
+}
+
+const ListStackScreen = () => {
+  return (
+    <ListStack.Navigator>
+      <ListStack.Screen name="List" component={List} options={{title:"List of Products", headerTitleAlign:"center"}} />
+      <ListStack.Screen name="Details" component={Details} options={{title:"Details", headerTitleAlign:"center"}}  />
+    </ListStack.Navigator>
+  )
+}
+
+const screenOptions = ({ route }) => ({
+  tabBarIcon: ({ focused, color, size }) => {
+    let iconName;
+
+    switch(route.name){
+      // focus가 있으면 'home' 아이콘, 없으면 'home-outline'
+      case 'Home':
+        iconName = focused
+          ? 'home'
+          : 'home-outline';
+        break;
+      case 'List':
+        iconName = focused
+          ? 'list'
+          : 'list-outline'; 
+        break;
+      case 'Actions':
+        iconName = focused
+          ? 'checkmark'
+          : 'checkmark-outline'; 
+        break;
+    }
+
+    // You can return any component that you like here!
+    return <Ionicons name={iconName} size={size} color={color} />;
+  },
+})
+
+const tabBarOptions= {
+  activeTintColor: 'tomato',
+  inactiveTintColor: 'gray',
+}
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Tab.Navigator screenOptions={screenOptions} tabBarOptions={tabBarOptions}>
+          <Tab.Screen name="Home" component={HomeStackScreen}/>
+          <Tab.Screen name="List" component={ListStackScreen}/>
+          <Tab.Screen name="Actions" component={Actions}/>
+        </Tab.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
-// App 컴포넌트 끝부분
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
