@@ -18,6 +18,13 @@ import Actions from './components/Actions'
 // https://ionicons.com/
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+
+import rootReducer from './redux/reducers';
+
+const store = createStore(rootReducer);
+
 const Tab = createBottomTabNavigator();
 const ListStack = createStackNavigator();
 const HomeStack = createStackNavigator();
@@ -34,7 +41,7 @@ const HomeStackScreen = () => {
 const ListStackScreen = () => {
   return (
     <ListStack.Navigator>
-      <ListStack.Screen name="List" component={List} options={{title:"List of Products", headerTitleAlign:"center"}} />
+      <ListStack.Screen name="List" component={List} options={{title:"List", headerTitleAlign:"center"}} />
       <ListStack.Screen name="Details" component={Details} options={{title:"Details", headerTitleAlign:"center"}}  />
     </ListStack.Navigator>
   )
@@ -75,14 +82,16 @@ const tabBarOptions= {
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <Tab.Navigator screenOptions={screenOptions} tabBarOptions={tabBarOptions}>
-          <Tab.Screen name="Home" component={HomeStackScreen}/>
-          <Tab.Screen name="List" component={ListStackScreen}/>
-          <Tab.Screen name="Actions" component={Actions}/>
-        </Tab.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Tab.Navigator screenOptions={screenOptions} tabBarOptions={tabBarOptions}>
+            <Tab.Screen name="Home" component={HomeStackScreen}/>
+            <Tab.Screen name="List" component={ListStackScreen}/>
+            <Tab.Screen name="Actions" component={Actions}/>
+          </Tab.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </Provider>
   );
 }
